@@ -1,5 +1,5 @@
 // 🔹 SOCKET.IO
-const socket = io();
+const socket = io('http://34.39.159.103:3000');
 socket.on('connect', () => console.log('✅ Conectado ao backend'));
 
 // -----------------------------
