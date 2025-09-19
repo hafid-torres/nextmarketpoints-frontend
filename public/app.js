@@ -1,5 +1,5 @@
 // 🔹 SOCKET.IO
-const socket = io('http://34.39.159.103:3000', { transports: ['websocket', 'polling'] });
+const socket = io('http://34.39.159.103:3000', { transports: ['websocket'] });
 socket.on('connect', () => console.log('✅ Conectado ao backend'));
 
 // -----------------------------
@@ -24,7 +24,7 @@ new TradingView.widget({
 // -----------------------------
 // 🔹 TICKER INFINITO SUAVE (dados do backend)
 const tickerEl = document.getElementById('ticker');
-const TICKER_SYMBOLS = {}; // obj com todos os símbolos atuais
+const TICKER_SYMBOLS = {};
 
 function createTickerItem(symbol){
   const el = document.createElement('div');
@@ -36,26 +36,24 @@ function createTickerItem(symbol){
   return el;
 }
 
-let tickerItems = []; // array de elementos do DOM
+let tickerItems = [];
 
-// Ao receber init do backend, inicializa ticker
+// Inicializa ticker ao receber init do backend
 socket.on('init', data => {
   const symbols = data.symbols;
   symbols.forEach(s => {
     TICKER_SYMBOLS[s] = { price: 0 };
     tickerItems.push(createTickerItem(s));
   });
-  // Duplica para loop infinito
   symbols.forEach(s => tickerItems.push(createTickerItem(s)));
 });
 
-// Atualiza ticker quando backend envia
+// Atualiza ticker quando backend envia dados
 socket.on('ticker', t => {
   if(!TICKER_SYMBOLS[t.symbol]) return;
   const oldPrice = TICKER_SYMBOLS[t.symbol].price;
   TICKER_SYMBOLS[t.symbol].price = t.price;
 
-  // Atualiza todos os elementos correspondentes no carrossel
   tickerItems.forEach(el => {
     if(el.querySelector('.symbol').textContent === t.symbol){
       el.querySelector('.price').textContent = t.price.toFixed(2);
@@ -74,10 +72,9 @@ socket.on('ticker', t => {
   });
 });
 
-// Animação do ticker (loop infinito e suave)
 let tickerPos = 0;
 function animateTicker(){
-  tickerPos -= 1; // velocidade
+  tickerPos -= 1;
   if(Math.abs(tickerPos) > tickerEl.scrollWidth/2){
     tickerPos = 0;
   }
@@ -134,7 +131,6 @@ function renderClocks(){
             </div>`;
   }).join('');
 
-  // Atualiza ponteiros analógicos
   document.querySelectorAll('.analog-clock').forEach(c=>{
     const ctx = c.getContext('2d');
     const tz = c.dataset.tz;
@@ -147,29 +143,26 @@ function renderClocks(){
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 2;
 
+    const sec = time.getSeconds();
+    const min = time.getMinutes() + sec/60;
+    const hr = time.getHours()%12 + min/60;
+
     // Círculo externo
     ctx.beginPath();
     ctx.arc(0,0,r-1,0,2*Math.PI);
     ctx.stroke();
 
     // Ponteiros
-    const sec = time.getSeconds();
-    const min = time.getMinutes() + sec/60;
-    const hr = time.getHours()%12 + min/60;
-
-    // Hora
     ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.lineTo(r*0.5*Math.sin(2*Math.PI*hr/12), -r*0.5*Math.cos(2*Math.PI*hr/12));
     ctx.stroke();
 
-    // Minuto
     ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.lineTo(r*0.75*Math.sin(2*Math.PI*min/60), -r*0.75*Math.cos(2*Math.PI*min/60));
     ctx.stroke();
 
-    // Segundo
     ctx.strokeStyle = 'red';
     ctx.beginPath();
     ctx.moveTo(0,0);
