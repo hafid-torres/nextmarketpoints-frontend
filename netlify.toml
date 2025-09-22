@@ -1,6 +1,9 @@
 [build]
-  publish = "build"   # pasta do seu frontend build
   command = "npm run build"
+  publish = "dist"   # <- aqui é a mudança para Vite
+
+[build.environment]
+  VITE_BACKEND_URL = "http://34.39.159.103:3000"
 
 [[redirects]]
   from = "/api/news/*"
