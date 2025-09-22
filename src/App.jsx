@@ -18,7 +18,7 @@ import './styles/global.css';
 import './App.css';
 
 export default function App() {
-  const { ticker, volatility, signals, news } = useSocket("http://localhost:3000");
+  const { ticker, volatility, signals, news } = useSocket(import.meta.env.VITE_BACKEND_URL);
 
   const activeSignals = signals.filter(s => s.status === "ativo");
   const closedSignals = signals.filter(s => s.status === "fechado");

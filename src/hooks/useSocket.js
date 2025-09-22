@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-export default function useSocket(url = "http://localhost:3000") {
+export default function useSocket(url = import.meta.env.VITE_BACKEND_URL) {
   const [state, setState] = useState({
     ticker: {},
     volatility: {},
