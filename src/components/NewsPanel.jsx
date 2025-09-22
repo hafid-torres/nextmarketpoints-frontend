@@ -1,14 +1,20 @@
 import './NewsPanel.css';
 
 export default function NewsPanel({ news }) {
-  // Mantém somente as 10 últimas notícias
-  const latestNews = news.slice(0, 10);
+  const latestNews = Array.isArray(news) ? news.slice(0, 10) : [];
+
+  console.log("NewsPanel render:", latestNews); // 🔹 log para debug
+
+  if (!latestNews.length) return (
+    <div className="news-panel">
+      <div className="news-header">BREAKING NEWS</div>
+      <div className="news-list">Nenhuma notícia disponível</div>
+    </div>
+  );
 
   return (
     <div className="news-panel">
-      <div className="news-header">
-        BREAKING NEWS
-      </div>
+      <div className="news-header">BREAKING NEWS</div>
       <div className="news-list">
         {latestNews.map((n, index) => (
           <a 
