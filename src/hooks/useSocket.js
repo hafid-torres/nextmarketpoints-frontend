@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-export default function useSocket(url = import.meta.env.VITE_BACKEND_URL) {
+export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
   const [state, setState] = useState({
     ticker: {},
     volatility: {},
@@ -10,7 +10,9 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_URL) {
   });
 
   useEffect(() => {
-    const socket = io(url);
+    if (!url) return; // segurança caso a variável do .env não exista
+
+    const socket = io(url, { transports: ['websocket'] });
 
     // Ticker
     socket.on("ticker", data =>
@@ -33,7 +35,6 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_URL) {
     // Notícias
     socket.on("news", data => {
       if (Array.isArray(data)) {
-        // Mantém máximo de 10 notícias e adiciona as novas no topo
         setState(prev => ({
           ...prev,
           news: data.slice(0, 10)

@@ -10,15 +10,17 @@ import SignalsPanel from './components/SignalsPanel';
 import ActiveSignalsPanel from './components/ActiveSignalsPanel';
 import StatsPanel from './components/StatsPanel';
 import InsightsPanel from './components/InsightsPanel';
-import ExtraWidgetsSection from './components/ExtraWidgetsSection'; // 🔹 import novo
+import ExtraWidgetsSection from './components/ExtraWidgetsSection';
 
-import useSocket from './hooks/useSocket'; // ✅ usar socket real
+import useSocket from './hooks/useSocket';
 
 import './styles/global.css';
 import './App.css';
 
 export default function App() {
-  const { ticker, volatility, signals, news } = useSocket(import.meta.env.VITE_BACKEND_URL);
+  // 🔹 Passa a URL do backend diretamente do .env para o hook de socket
+  const backendSocketURL = import.meta.env.VITE_BACKEND_SOCKET;
+  const { ticker, volatility, signals, news } = useSocket(backendSocketURL);
 
   const activeSignals = signals.filter(s => s.status === "ativo");
   const closedSignals = signals.filter(s => s.status === "fechado");
@@ -45,7 +47,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* 🔹 Extra Section: 3 painéis */}
+      {/* Extra Section */}
       <div className="extra-section">
         <div className="active-panel-wrapper">
           <ActiveSignalsPanel signals={signals} />
@@ -58,7 +60,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* 🔹 Nova seção de widgets TradingView */}
+      {/* Nova seção de widgets TradingView */}
       <ExtraWidgetsSection />
 
       <Footer />
