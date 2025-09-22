@@ -1,0 +1,108 @@
+.active-signals-panel {
+  background: #0a0a0f;
+  border: 1px solid #1f1f2e;
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  height: 100%;       /* ocupa 100% do wrapper da sessão extra */
+  max-height: 320px;  /* mesma altura dos painéis StatsPanel e InsightsPanel */
+  overflow: hidden;
+}
+
+/* Header com abas */
+.active-signals-panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.active-signals-panel .tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #1b1b29;
+  color: #aaa;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+}
+
+.active-signals-panel .tab.active {
+  background: #00f5ff;
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+/* Conteúdo com scroll */
+.active-signals-panel .signals-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.active-signals-panel .signals-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.active-signals-panel .signals-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.active-signals-panel .signals-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.active-signals-panel .signal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border-bottom: 1px solid #1f1f2e;
+  font-size: 13px;
+}
+
+.active-signals-panel .signal-item:hover {
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.active-signals-panel .signal-item.open .status-icon {
+  color: #00ff95;
+}
+
+.active-signals-panel .signal-item.closed .status-icon {
+  color: #ff4f4f;
+}
+
+/* Cores BUY / SELL */
+.active-signals-panel .direcao.compra {
+  color: #00FF95;
+  font-weight: bold;
+}
+
+.active-signals-panel .direcao.venda {
+  color: #FF4F4F;
+  font-weight: bold;
+}
+
+/* Footer com filtro */
+.active-signals-panel .panel-footer {
+  margin-top: 10px;
+}
+
+.active-signals-panel .panel-search {
+  width: 100%;
+  padding: 6px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  background: #1b1b29;
+  color: #fff;
+}

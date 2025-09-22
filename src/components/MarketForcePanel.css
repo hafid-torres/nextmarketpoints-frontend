@@ -1,0 +1,58 @@
+.market-force-panel {
+  width: 200px;
+  background: rgba(0,0,0,0.65);
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.panel-header {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.fear-index {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.fear-bar {
+  height: 10px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fear-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff4c4c, #ffcc00, #00ff7f);
+  transition: width 1s ease-in-out;
+}
+
+.fear-value {
+  font-size: 11px;
+  text-align: right;
+}
+
+.market-sentiment {
+  font-size: 12px;
+}
+
+.sentiment-indicator.bullish {
+  color: #00ff7f;
+  font-weight: bold;
+}
+
+.sentiment-indicator.bearish {
+  color: #ff4c4c;
+  font-weight: bold;
+}

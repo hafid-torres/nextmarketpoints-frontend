@@ -1,0 +1,6 @@
+/* src/components/VolatilitySection.css */
+.volatility-section {
+  display: flex;
+  justify-content: center; /* centraliza horizontalmente */
+  margin-top: 60px;       /* distância dos relógios */
+}

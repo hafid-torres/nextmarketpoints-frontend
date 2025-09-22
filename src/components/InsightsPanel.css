@@ -1,0 +1,84 @@
+/* InsightsPanel.css */
+.insights-panel {
+  background: #0a0a0f;
+  border: 1px solid #1f1f2e;
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.insights-panel .panel-header {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00f5ff;
+  text-align: center;
+}
+
+.insights-panel .panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+
+.insights-panel .panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.insights-panel .panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.insights-panel .panel-content::-webkit-scrollbar-thumb {
+  background: rgba(0,255,255,0.1);
+  border-radius: 6px;
+}
+
+.insight-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+  font-size: 13px;
+  border-bottom: 1px solid #1f1f2e;
+}
+
+.insight-item:last-child {
+  border-bottom: none;
+}
+
+.insight-item .hora {
+  color: #888;
+  width: 50px;
+  flex-shrink: 0;
+}
+
+.insight-item .icon {
+  font-weight: bold;
+  width: 16px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.insight-item.alta .icon {
+  color: #00ff95;
+}
+
+.insight-item.queda .icon {
+  color: #ff4f4f;
+}
+
+.insight-item.noticia .icon {
+  color: #ffff00;
+}
+
+.insight-item .msg {
+  flex: 1;
+}

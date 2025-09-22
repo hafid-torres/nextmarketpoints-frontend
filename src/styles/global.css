@@ -1,0 +1,19 @@
+/* global.css */
+:root {
+  --bg: #0b0b0b;
+  --panel: #0f0f0f;
+  --accent: #1ed760;
+  --accent-down: #ff4d4d;
+  --muted: #9bb39b;
+  --text: #d1f0d1;
+  --live: #ff4d4d;
+  --open: #00aaff;
+  --closed: #ff5555;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Arial;
+  background: var(--bg);
+  color: var(--text);
+}

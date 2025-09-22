@@ -1,0 +1,99 @@
+/* PanelsSection.css
+   - Layout de 3 painéis lado-a-lado (desktop) e empilhados em telas pequenas
+   - Cada painel tem header fixo e body com scroll interno
+*/
+
+.panels-section {
+  width: 100%;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 painéis lado a lado */
+  gap: 20px;
+  align-items: start;
+  box-sizing: border-box;
+  padding: 0 8px;
+}
+
+/* estilo base compartilhado por cada painel da seção */
+.panels-section .panel {
+  background: rgba(10,10,15,0.95);
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;   /* altura inicial, ajustável */
+  max-height: 340px;   /* evita esticar demais a área */
+  box-shadow: 0 0 12px rgba(0,191,255,0.06);
+  border: 1px solid rgba(255,255,255,0.04);
+  overflow: hidden;    /* garante header fixo e body com scroll */
+}
+
+/* header comum - pode ser sobrescrito por css do painel específico */
+.panels-section .panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #00f5ff; /* accent padrão, os arquivos específicos podem escolher outro */
+  text-shadow: 0 0 6px rgba(0,191,255,0.12);
+}
+
+/* área com conteúdo que rola internamente */
+.panels-section .panel .panel-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 6px; /* espaço para scrollbar */
+  scrollbar-width: thin;
+}
+
+/* webkit scrollbar (visual suave e discreto) */
+.panels-section .panel .panel-body::-webkit-scrollbar {
+  width: 8px;
+}
+.panels-section .panel .panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.panels-section .panel .panel-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+}
+.panels-section .panel .panel-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* utilitários internos (ex.: botões no header) */
+.panels-section .panel .panel-header .actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.panels-section .panel .panel-header .actions .btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #ddd;
+}
+.panels-section .panel .panel-header .actions .btn.active {
+  background: linear-gradient(90deg, rgba(0,255,149,0.12), rgba(0,191,255,0.08));
+  color: #000;
+  font-weight: 700;
+  border-color: rgba(0,255,149,0.12);
+}
+
+/* responsividade: em telas menores os painéis empilham um embaixo do outro */
+@media (max-width: 1100px) {
+  .panels-section {
+    grid-template-columns: 1fr;
+  }
+  .panels-section .panel {
+    max-height: none; /* deixa crescer verticalmente em telas pequenas */
+    min-height: 180px;
+  }
+}

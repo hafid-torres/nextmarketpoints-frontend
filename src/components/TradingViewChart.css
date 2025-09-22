@@ -1,0 +1,28 @@
+/* TradingViewChart.css */
+.tradingview-widget-container {
+  width: 100%;
+  height: 100%;
+}
+
+.tradingview-widget-container__widget {
+  width: 100%;
+  height: 600px; /* você pode alterar dinamicamente via props se quiser */
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tradingview-widget-copyright {
+  font-size: 11px;
+  text-align: right;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.tradingview-widget-copyright a {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.tradingview-widget-copyright a:hover {
+  text-decoration: underline;
+}

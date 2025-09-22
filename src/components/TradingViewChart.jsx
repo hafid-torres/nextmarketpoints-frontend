@@ -1,6 +1,7 @@
 import { useEffect } from "react";
+import "./TradingViewChart.css";
 
-export default function TradingViewChart() {
+export default function TradingViewChart({ symbol = "OANDA:XAUUSD" }) {
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
@@ -14,27 +15,28 @@ export default function TradingViewChart() {
       "hide_legend": false,
       "hide_volume": false,
       "hotlist": false,
-      "interval": "D",
+      "interval": "5",
       "locale": "br",
       "save_image": true,
       "style": "1",
-      "symbol": "NASDAQ:AAPL",
+      "symbol": symbol,
       "theme": "dark",
-      "timezone": "America/Sao_Paulo",
+      "timezone": "Etc/UTC",
       "backgroundColor": "#0F0F0F",
       "gridColor": "rgba(242, 242, 242, 0.06)",
       "autosize": true
     });
 
-    document.querySelector(".tradingview-widget-container__widget").appendChild(script);
-  }, []);
+    const container = document.querySelector(".tradingview-widget-container__widget");
+    if (container) container.appendChild(script);
+  }, [symbol]);
 
   return (
-    <div className="tradingview-widget-container" style={{ height: "100%", width: "100%" }}>
-      <div className="tradingview-widget-container__widget" style={{ height: "600px", width: "100%" }}></div>
+    <div className="tradingview-widget-container" style={{ height: "600px", width: "100%" }}>
+      <div className="tradingview-widget-container__widget"></div>
       <div className="tradingview-widget-copyright">
         <a
-          href="https://br.tradingview.com/symbols/NASDAQ-AAPL/?exchange=NASDAQ"
+          href="https://br.tradingview.com/"
           rel="noopener noreferrer"
           target="_blank"
         >

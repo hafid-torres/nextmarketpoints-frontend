@@ -1,90 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Next Market Points</title>
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- 🔹 Socket.io via CDN -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-fOqAzsFfQb1/2/4OeV0q8+cyxGV6wFRn8ZQQPZ5WXL+RvdH7K6f+N+paHjMChhpo" crossorigin="anonymous"></script>
-
-  <!-- 🔹 TradingView -->
-  <script src="https://s3.tradingview.com/tv.js"></script>
-</head>
-<body>
-
-  <!-- HEADER -->
-  <header class="site-header">
-    <div class="brand">
-      <div class="logo"><span>THE NEXT</span> MARKET POINTS</div>
-    </div>
-    <nav class="main-nav">
-      <div class="nav-item">Ferramentas ▾
-        <div class="dropdown">
-          <div class="dropdown-item">Calendário</div>
-          <div class="dropdown-item">Indicadores</div>
-        </div>
-      </div>
-      <div class="nav-item">Gerenciamento ▾
-        <div class="dropdown">
-          <div class="dropdown-item">Carteira</div>
-          <div class="dropdown-item">Alertas</div>
-        </div>
-      </div>
-      <div class="nav-item">Sobre Nós ▾
-        <div class="dropdown">
-          <div class="dropdown-item">Equipe</div>
-          <div class="dropdown-item">Contato</div>
-        </div>
-      </div>
-    </nav>
-    <div class="auth">
-      <button class="btn-primary">Registro →</button>
-      <button class="btn-outline">Login →</button>
-    </div>
-  </header>
-
-  <!-- TICKER CARROSSEL -->
-  <div class="ticker-container">
-    <div class="ticker" id="ticker"></div>
-  </div>
-
-  <!-- TOP ROW -->
-  <div class="top-row">
-    <div class="clocks" id="clocks"></div>
-    <div class="volatility-panel">
-      <div class="vol-header">Volatilidade do mercado <span class="live-indicator">● LIVE</span></div>
-      <div class="vol-bar">
-        <div class="vol-fill" id="vol-fill"></div>
-      </div>
-      <div class="vol-scale"><span>Baixa</span><span>Média</span><span>Alta</span></div>
-    </div>
-  </div>
-
-  <!-- MAIN GRID -->
-  <div class="main-grid">
-    <div class="chart-area">
-      <div id="tv-widget" class="tv-widget"></div>
-    </div>
-    <aside class="side-panel">
-      <div class="signals-panel">
-        <h3>🔴 LIVE Sinais</h3>
-        <ul id="signals" class="signals-list"></ul>
-      </div>
-      <div class="news-panel">
-        <h3>Últimas Notícias</h3>
-        <div id="news" class="news-list"></div>
-      </div>
-    </aside>
-  </div>
-
-  <footer class="site-footer">
-    <small>© 2025 The Next Market Points. Todos os direitos reservados.</small>
-    <div>⚠️ <small>O conteúdo deste site é apenas informativo. Não constitui recomendação de investimento.</small></div>
-  </footer>
-
-  <!-- 🔹 App.js -->
-  <script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Next Market Points</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
