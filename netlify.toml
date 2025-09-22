@@ -1,27 +1,23 @@
-[build]
-  command = "npm run build"
-  publish = "dist"   # <- aqui é a mudança para Vite
-
 [build.environment]
-  VITE_BACKEND_URL = "http://34.39.159.103:3000"
+  VITE_BACKEND_URL = "https://nextmarketpoints.netlify.app/api"
 
 [[redirects]]
   from = "/api/news/*"
-  to = "http://34.39.159.103:3000/news/:splat"
+  to = "https://nextmarketpoints.netlify.app/api/news/:splat"
   status = 200
   force = true
   headers = { "Access-Control-Allow-Origin" = "*" }
 
 [[redirects]]
   from = "/api/strategies/*"
-  to = "http://34.39.159.103:3000/strategies/:splat"
+  to = "https://nextmarketpoints.netlify.app/api/strategies/:splat"
   status = 200
   force = true
   headers = { "Access-Control-Allow-Origin" = "*" }
 
 [[redirects]]
   from = "/api/*"
-  to = "http://34.39.159.103:3000/:splat"
+  to = "https://nextmarketpoints.netlify.app/api/:splat"
   status = 200
   force = true
   headers = { "Access-Control-Allow-Origin" = "*" }
