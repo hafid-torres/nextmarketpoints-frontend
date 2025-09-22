@@ -1,4 +1,3 @@
-// useSocket.jsx
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
@@ -18,46 +17,36 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
 
     const socket = io(url, { transports: ["websocket"] });
 
-    socket.on("connect", () => {
-      console.log("✅ Conectado ao backend via Socket.IO!");
-    });
+    const handleTicker = data =>
+      setState(prev => ({ ...prev, ticker: data || {} }));
 
-    // Recebe ticker
-    socket.on("ticker", data =>
-      setState(prev => ({ ...prev, ticker: data }))
-    );
+    const handleVolatility = data =>
+      setState(prev => ({ ...prev, volatility: data || {} }));
 
-    // Recebe volatilidade
-    socket.on("volatility", data =>
-      setState(prev => ({ ...prev, volatility: data }))
-    );
-
-    // Recebe sinais
-    socket.on("signal", data => {
+    const handleSignal = data => {
+      if (!data) return;
       setState(prev => ({
         ...prev,
-        signals: [data, ...prev.signals].slice(0, 50)
+        signals: [data, ...(prev.signals || [])].slice(0, 50)
       }));
-    });
+    };
 
-    // Recebe notícias
-    socket.on("news", data => {
-      if (Array.isArray(data)) {
-        setState(prev => ({
-          ...prev,
-          news: data.slice(0, 10)  // mantém máximo 10
-        }));
-      } else if (data && typeof data === "object") {
-        setState(prev => ({
-          ...prev,
-          news: [data, ...prev.news].slice(0, 10)
-        }));
-      }
-    });
+    const handleNews = data => {
+      if (!data) return;
+      const newsArray = Array.isArray(data) ? data : [data];
+      setState(prev => ({
+        ...prev,
+        news: [...newsArray, ...(prev.news || [])].slice(0, 10)
+      }));
+    };
 
-    socket.on("disconnect", () => {
-      console.log("⚠️ Desconectado do backend!");
-    });
+    socket.on("connect", () => console.log("✅ Conectado ao backend via Socket.IO!"));
+    socket.on("disconnect", () => console.log("⚠️ Desconectado do backend!"));
+
+    socket.on("ticker", handleTicker);
+    socket.on("volatility", handleVolatility);
+    socket.on("signal", handleSignal);
+    socket.on("news", handleNews);
 
     return () => socket.disconnect();
   }, [url]);

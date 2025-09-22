@@ -1,4 +1,5 @@
 // App.jsx
+import { useMemo } from "react";
 import DashboardTop from './components/DashboardTop';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -18,19 +19,35 @@ import './styles/global.css';
 import './App.css';
 
 export default function App() {
-  // 🔹 Passa a URL do backend diretamente do .env para o hook de socket
   const backendSocketURL = import.meta.env.VITE_BACKEND_SOCKET;
   const { ticker, volatility, signals, news } = useSocket(backendSocketURL);
 
-  const activeSignals = signals.filter(s => s.status === "ativo");
-  const closedSignals = signals.filter(s => s.status === "fechado");
+  const activeSignals = useMemo(
+    () => signals.filter(s => s.status === "ativo"),
+    [signals]
+  );
+  const closedSignals = useMemo(
+    () => signals.filter(s => s.status === "fechado"),
+    [signals]
+  );
+
+  // Mapeia notícias para tipo consistente
+  const insights = useMemo(() => {
+    return news.map((n, idx) => {
+      let tipo = "noticia";
+      const title = (n.title || "").toLowerCase();
+      if (title.includes("up") || title.includes("alta") || title.includes("bull")) tipo = "alta";
+      else if (title.includes("down") || title.includes("queda") || title.includes("bear")) tipo = "queda";
+      return { ...n, tipo, id: n.id || idx, msg: n.title || "Sem título", hora: n.publishedAt || "" };
+    });
+  }, [news]);
 
   return (
     <div className="app">
       <Header />
 
       {/* Ticker */}
-      <Ticker ticker={ticker} />
+      <Ticker prices={ticker} />
 
       {/* Relógios centralizados */}
       <Clocks />
@@ -56,7 +73,7 @@ export default function App() {
           <StatsPanel closedSignals={closedSignals} />
         </div>
         <div className="insights-panel-wrapper">
-          <InsightsPanel insights={news} />
+          <InsightsPanel insights={insights} />
         </div>
       </div>
 

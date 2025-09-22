@@ -1,8 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "./TradingViewChart.css";
 
 export default function TradingViewChart({ symbol = "OANDA:XAUUSD" }) {
+  const widgetRef = useRef(null);
+
   useEffect(() => {
+    if (!widgetRef.current) return;
+
+    // Limpa scripts antigos antes de adicionar novo
+    widgetRef.current.innerHTML = "";
+
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.async = true;
@@ -27,13 +34,16 @@ export default function TradingViewChart({ symbol = "OANDA:XAUUSD" }) {
       "autosize": true
     });
 
-    const container = document.querySelector(".tradingview-widget-container__widget");
-    if (container) container.appendChild(script);
+    widgetRef.current.appendChild(script);
+
+    return () => {
+      widgetRef.current.innerHTML = ""; // cleanup ao desmontar
+    };
   }, [symbol]);
 
   return (
     <div className="tradingview-widget-container" style={{ height: "600px", width: "100%" }}>
-      <div className="tradingview-widget-container__widget"></div>
+      <div className="tradingview-widget-container__widget" ref={widgetRef}></div>
       <div className="tradingview-widget-copyright">
         <a
           href="https://br.tradingview.com/"

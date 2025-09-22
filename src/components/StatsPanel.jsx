@@ -1,9 +1,8 @@
-// StatsPanel.jsx
 import { useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
 import './StatsPanel.css';
 
-export default function StatsPanel({ closedSignals }) {
+export default function StatsPanel({ closedSignals = [] }) {
   const [popupData, setPopupData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [popupTitle, setPopupTitle] = useState("");
@@ -26,7 +25,9 @@ export default function StatsPanel({ closedSignals }) {
     { name: "Perdas", value: totalPerdas, color: "#FF4F4F" },
   ];
 
-  const handleSliceClick = (name) => {
+  const handleSliceClick = (entry) => {
+    if (!entry) return;
+    const name = entry.name;
     const filtered = closedSignals.filter(s =>
       (name === "Ganhos" && s.resultado === "ganho") ||
       (name === "Perdas" && s.resultado === "perda")
@@ -57,7 +58,7 @@ export default function StatsPanel({ closedSignals }) {
               innerRadius={50}
               outerRadius={80}
               paddingAngle={5}
-              onClick={(entry) => handleSliceClick(entry.name)}
+              onClick={handleSliceClick}
             >
               {pieData.map((entry, i) => (
                 <Cell key={`cell-${i}`} fill={entry.color} cursor="pointer" />
@@ -106,7 +107,7 @@ export default function StatsPanel({ closedSignals }) {
                     <td>{t.ativo}</td>
                     <td>{t.direcao}</td>
                     <td>{t.preco}</td>
-                    <td>{t.stop || "-"}</td>
+                    <td>{t.stopLoss || "-"}</td>
                     <td>{t.hora}</td>
                     <td>{t.data || "-"}</td>
                   </tr>

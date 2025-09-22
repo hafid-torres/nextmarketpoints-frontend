@@ -18,11 +18,10 @@ export default function Ticker() {
   const scrollRef = useRef();
   const requestRef = useRef();
 
-  // Preços fakes
-  const generateFakePrices = () => {
+  const generateFakePrices = (prevPrices) => {
     const newPrices = {};
     SYMBOLS.forEach(s => {
-      const prev = prices[s.symbol]?.price || 1000;
+      const prev = prevPrices[s.symbol]?.price || 1000;
       const change = (Math.random() - 0.5) * 10;
       newPrices[s.symbol] = { price: +(prev + change).toFixed(2), change: +(change.toFixed(2)) };
     });
@@ -30,13 +29,16 @@ export default function Ticker() {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => setPrices(generateFakePrices()), 1500);
+    const interval = setInterval(() => {
+      setPrices(prev => generateFakePrices(prev));
+    }, 1500);
     return () => clearInterval(interval);
-  }, [prices]);
+  }, []);
 
   // Loop infinito via scroll JS suave
   useEffect(() => {
     const scrollEl = scrollRef.current;
+    if (!scrollEl) return;
     let scrollPos = 0;
     const speed = 0.3; // pixels por frame, ajustável
 

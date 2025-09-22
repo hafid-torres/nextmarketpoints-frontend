@@ -5,7 +5,7 @@
   border-radius: 8px;
   padding: 10px;
   width: 300px;
-  height: 54%; /* mantém tamanho original */
+  height: 54%;
   display: flex;
   flex-direction: column;
   color: #fff;
@@ -48,11 +48,23 @@
 }
 
 .signals-list {
-  overflow-y: auto; /* mantém scroll */
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
   max-height: 100%;
+}
+
+/* Scrollbar customizada */
+.signals-list::-webkit-scrollbar {
+  width: 6px;
+}
+.signals-list::-webkit-scrollbar-thumb {
+  background: #00ff7f88;
+  border-radius: 3px;
+}
+.signals-list::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
 }
 
 .signal-item {
@@ -73,6 +85,13 @@
   font-size: 13px;
   display: flex;
   justify-content: space-between;
+}
+
+/* Truncamento textos longos */
+.signal-item span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .signal-status.ativo {
@@ -105,6 +124,12 @@
   justify-content: center;
   align-items: center;
   z-index: 50;
+  animation: fadeIn 0.2s ease-in-out; /* fade-in popup */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .popup-content {
@@ -112,7 +137,8 @@
   background: #111;
   padding: 30px 25px;
   border-radius: 12px;
-  width: 420px;
+  width: 90%;
+  max-width: 420px;
   box-shadow: 0 0 25px rgba(0,255,127,0.5);
   color: #fff;
   font-family: Arial, sans-serif;

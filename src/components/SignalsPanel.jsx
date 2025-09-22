@@ -49,7 +49,7 @@ export default function SignalsPanel({ signals }) {
               onClick={() => onClickSignal(sig)}
             >
               <div className="signal-row">
-                <span>{ativo}</span>
+                <span title={ativo}>{ativo}</span>
                 <span className={`signal-tipo ${tipo.toLowerCase()}`}>
                   {tipo.toUpperCase() === 'BUY' || tipo.toUpperCase() === 'COMPRA' ? 'BUY' : 'SELL'}
                 </span>
