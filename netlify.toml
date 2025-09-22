@@ -1,0 +1,24 @@
+[build]
+  publish = "build"   # pasta do seu frontend build
+  command = "npm run build"
+
+[[redirects]]
+  from = "/api/news/*"
+  to = "http://34.39.159.103:3000/news/:splat"
+  status = 200
+  force = true
+  headers = { "Access-Control-Allow-Origin" = "*" }
+
+[[redirects]]
+  from = "/api/strategies/*"
+  to = "http://34.39.159.103:3000/strategies/:splat"
+  status = 200
+  force = true
+  headers = { "Access-Control-Allow-Origin" = "*" }
+
+[[redirects]]
+  from = "/api/*"
+  to = "http://34.39.159.103:3000/:splat"
+  status = 200
+  force = true
+  headers = { "Access-Control-Allow-Origin" = "*" }
