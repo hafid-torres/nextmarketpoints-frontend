@@ -1,24 +1,20 @@
-/* ====================== App.css ====================== */
-.App {
+.App, .app {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
+/* Main Grid: Chart + Side Panels */
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 320px;
   gap: 20px;
-  padding: 20px;
+  padding: 20px 0;
+  align-items: start;
 }
 
-.top-row {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
+/* Chart area */
 .chart-area {
   background: var(--panel);
   padding: 16px;
@@ -26,7 +22,7 @@
   min-height: 520px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .tv-widget {
@@ -37,69 +33,30 @@
   overflow: hidden;
 }
 
+/* Side Panels */
 .side-panels {
   display: flex;
   flex-direction: column;
+  width: 320px;
+  height: 100%;
+  max-height: 628px;
   gap: 20px;
-  width: 300px;
-  height: 600px;
-  max-height: 100%;
 }
 
-/* 🔹 Nova Sessão de 3 painéis abaixo do chart e side-panels */
+.side-panels > * {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Extra Section: Painéis ativos, stats e insights */
 .extra-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin: 20px 0;
+  margin: 30px 0 60px 0; /* 40px de espaço abaixo da seção */
 }
 
-.extra-section > * {
-  background: var(--panel);
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  min-height: 240px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* manter overflow geral */
-}
-
-/* 🔹 Ajuste específico para InsightsPanel */
-.extra-section > .insights-panel {
-  flex: 1;
-  height: 100%;
-  overflow-y: auto; /* scroll vertical interno */
-  padding-right: 4px;
-}
-
-/* 🔹 Ajustes específicos para StatsPanel */
-.stats-panel-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.stats-panel-wrapper .stats-panel .panel-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stats-panel-wrapper .stats-panel .top-assets {
-  margin-top: auto;
-  width: 100%;
-}
-
-.stats-panel-wrapper .stats-panel .ativos-list {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-size: 13px;
-}
-
-/* 🔹 Nova Seção de Widgets TradingView */
+/* Widgets Section */
 .widgets-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -112,8 +69,8 @@
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  min-height: 300px; /* widgets geralmente maiores */
-  overflow: hidden;
+  min-height: 300px;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -123,4 +80,45 @@
   font-weight: bold;
   margin-bottom: 10px;
   color: var(--text);
+}
+
+/* Scrollbars */
+.side-panels::-webkit-scrollbar,
+.extra-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.side-panels::-webkit-scrollbar-thumb,
+.extra-section::-webkit-scrollbar-thumb {
+  background: rgba(0,255,255,0.1);
+  border-radius: 6px;
+}
+
+.side-panels::-webkit-scrollbar-track,
+.extra-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .side-panels {
+    width: 100%;
+    flex-direction: row;
+    gap: 10px;
+    overflow-x: auto;
+  }
+
+  .extra-section {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .extra-section {
+    grid-template-columns: 1fr;
+  }
 }

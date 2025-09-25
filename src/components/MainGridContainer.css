@@ -1,0 +1,33 @@
+.main-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  width: 100%;
+  margin: 20px 0;
+}
+
+/* Chart area: mantém padding, sombra e borda */
+.main-grid-container .chart-area {
+  background: rgba(15, 15, 15, 0.85);
+  padding: 16px;
+  border-radius: 12px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Side Panels: Signals + News */
+.main-grid-container .side-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Cada painel do lado direito mantém seu estilo original */
+.main-grid-container .side-panels > * {
+  flex: 1 1 auto; /* permite que cada painel cresça sem quebrar layout */
+  min-height: 280px;
+  max-height: 600px;
+  overflow-y: auto;
+}

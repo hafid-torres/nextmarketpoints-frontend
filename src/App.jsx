@@ -1,4 +1,3 @@
-// App.jsx
 import { useMemo } from "react";
 import DashboardTop from './components/DashboardTop';
 import Header from './components/Header';
@@ -20,6 +19,8 @@ import './App.css';
 
 export default function App() {
   const backendSocketURL = import.meta.env.VITE_BACKEND_SOCKET;
+  const backendHTTPURL = import.meta.env.VITE_BACKEND_URL;
+
   const { ticker, volatility, signals, news } = useSocket(backendSocketURL);
 
   const activeSignals = useMemo(
@@ -31,7 +32,6 @@ export default function App() {
     [signals]
   );
 
-  // Mapeia notícias para tipo consistente
   const insights = useMemo(() => {
     return news.map((n, idx) => {
       let tipo = "noticia";
@@ -55,30 +55,33 @@ export default function App() {
       {/* Dashboard Top */}
       <DashboardTop volatility={volatility} />
 
-      {/* Main Grid */}
+      {/* Main Grid: Chart + Side Panels */}
       <div className="main-grid">
-        <TradingViewChart symbol="XAUUSD" />
+        <div className="chart-area">
+          <TradingViewChart symbol="XAUUSD" backendURL={backendHTTPURL} />
+        </div>
+
         <div className="side-panels">
-          <SignalsPanel signals={activeSignals} />
-          <NewsPanel news={news} />
+          <SignalsPanel signals={activeSignals} backendURL={backendHTTPURL} />
+          <NewsPanel news={news} backendURL={backendHTTPURL} />
         </div>
       </div>
 
-      {/* Extra Section */}
+      {/* Extra Section: Painéis ativos, stats e insights */}
       <div className="extra-section">
         <div className="active-panel-wrapper">
-          <ActiveSignalsPanel signals={signals} />
+          <ActiveSignalsPanel signals={signals} backendURL={backendHTTPURL} />
         </div>
         <div className="stats-panel-wrapper">
-          <StatsPanel closedSignals={closedSignals} />
+          <StatsPanel closedSignals={closedSignals} backendURL={backendHTTPURL} />
         </div>
         <div className="insights-panel-wrapper">
-          <InsightsPanel insights={insights} />
+          <InsightsPanel insights={insights} backendURL={backendHTTPURL} />
         </div>
       </div>
 
-      {/* Nova seção de widgets TradingView */}
-      <ExtraWidgetsSection />
+      {/* Widgets Section */}
+      <ExtraWidgetsSection backendURL={backendHTTPURL} />
 
       <Footer />
     </div>

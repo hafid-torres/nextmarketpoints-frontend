@@ -1,12 +1,13 @@
-/* TradingViewChart.css */
 .tradingview-widget-container {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .tradingview-widget-container__widget {
   width: 100%;
-  height: 600px; /* você pode alterar dinamicamente via props se quiser */
+  flex: 1; /* ocupar o máximo dentro do painel pai */
   border-radius: 10px;
   overflow: hidden;
 }
@@ -25,4 +26,8 @@
 
 .tradingview-widget-copyright a:hover {
   text-decoration: underline;
+}
+
+.blue-text {
+  font-weight: bold;
 }

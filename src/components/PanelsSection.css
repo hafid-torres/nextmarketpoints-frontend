@@ -24,7 +24,7 @@
   flex-direction: column;
   min-height: 220px;   /* altura inicial, ajustável */
   max-height: 340px;   /* evita esticar demais a área */
-  box-shadow: 0 0 12px rgba(0,191,255,0.06);
+  box-shadow: 0 4px 14px rgba(0,191,255,0.06);
   border: 1px solid rgba(255,255,255,0.04);
   overflow: hidden;    /* garante header fixo e body com scroll */
 }
@@ -39,6 +39,7 @@
   margin-bottom: 10px;
   color: #00f5ff; /* accent padrão, os arquivos específicos podem escolher outro */
   text-shadow: 0 0 6px rgba(0,191,255,0.12);
+  flex-shrink: 0;
 }
 
 /* área com conteúdo que rola internamente */
@@ -48,6 +49,7 @@
   -webkit-overflow-scrolling: touch;
   padding-right: 6px; /* espaço para scrollbar */
   scrollbar-width: thin;
+  scroll-behavior: smooth; /* scroll mais suave */
 }
 
 /* webkit scrollbar (visual suave e discreto) */
@@ -79,6 +81,12 @@
   font-size: 12px;
   cursor: pointer;
   color: #ddd;
+  transition: all 0.2s ease-in-out;
+}
+.panels-section .panel .panel-header .actions .btn:hover {
+  background: rgba(0,191,255,0.08);
+  color: #00f5ff;
+  font-weight: 700;
 }
 .panels-section .panel .panel-header .actions .btn.active {
   background: linear-gradient(90deg, rgba(0,255,149,0.12), rgba(0,191,255,0.08));

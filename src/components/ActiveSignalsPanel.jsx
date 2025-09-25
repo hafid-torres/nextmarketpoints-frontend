@@ -6,8 +6,7 @@ export default function ActiveSignalsPanel({ signals }) {
   const [filter, setFilter] = useState("");
   const [selectedSignal, setSelectedSignal] = useState(null);
 
-  const filterSignals = (arr) => 
-    arr.filter(s => s.ativo?.toLowerCase().includes(filter.toLowerCase()));
+  const filterSignals = (arr) => arr.filter(s => s.ativo?.toLowerCase().includes(filter.toLowerCase()));
 
   const ativos = filterSignals(signals.filter(s => s.status === "ativo"));
   const fechados = filterSignals(signals.filter(s => s.status === "fechado"));

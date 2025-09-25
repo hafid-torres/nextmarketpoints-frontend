@@ -1,22 +1,48 @@
 import "./MarketForcePanel.css";
 
-export default function MarketForcePanel({ data }) {
-  const { fearIndex, sentiment } = data;
+export default function MarketForcePanel({ pressure = 50 }) {
+  // calcula barras
+  const buyPercent = pressure > 55 ? pressure : 50;
+  const sellPercent = pressure < 45 ? 100 - pressure : 50;
+  const isNeutral = pressure >= 45 && pressure <= 55;
+
+  let subtitle = "NEUTRO";
+  let subtitleColor = "#FFC107"; // amarelo
+
+  if (pressure > 55) {
+    subtitle = "MERCADO COMPRADOR";
+    subtitleColor = "#00FF7F"; // verde
+  } else if (pressure < 45) {
+    subtitle = "MERCADO VENDEDOR";
+    subtitleColor = "#FF4C4C"; // vermelho
+  }
 
   return (
     <div className="market-force-panel">
-      <div className="panel-header">FORÇA DO MERCADO</div>
-      <div className="fear-index">
-        <span>Índice do Medo:</span>
-        <div className="fear-bar">
-          <div className="fear-fill" style={{ width: `${fearIndex}%` }}></div>
+      <div className="panel-title">FORÇA DO MERCADO</div>
+
+      <div className="pressure-bar-wrapper">
+        <div className="pressure-bar">
+          <div
+            className="pressure-buy"
+            style={{ width: `${buyPercent}%` }}
+          ></div>
+          <div
+            className="pressure-sell"
+            style={{ width: `${sellPercent}%` }}
+          ></div>
         </div>
-        <span className="fear-value">{fearIndex}%</span>
-      </div>
-      <div className="market-sentiment">
-        <span>Sentimento:</span>
-        <div className={`sentiment-indicator ${sentiment >= 0 ? 'bullish' : 'bearish'}`}>
-          {sentiment >= 0 ? `📈 +${(sentiment*100).toFixed(0)}%` : `📉 ${(sentiment*100).toFixed(0)}%`}
+
+        <div className="pressure-labels">
+          <span className="buy-label" style={{ color: "#00FF7F" }}>BUY</span>
+          <span className="sell-label" style={{ color: "#FF4C4C" }}>SELL</span>
+        </div>
+
+        <div
+          className="pressure-subtitle"
+          style={{ color: subtitleColor }}
+        >
+          {subtitle}
         </div>
       </div>
     </div>

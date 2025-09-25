@@ -28,19 +28,19 @@ export default function Ticker() {
     return newPrices;
   };
 
+  // Atualiza preços fake
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPrices(prev => generateFakePrices(prev));
-    }, 1500);
+    const interval = setInterval(() => setPrices(prev => generateFakePrices(prev)), 1500);
     return () => clearInterval(interval);
   }, []);
 
-  // Loop infinito via scroll JS suave
+  // Loop infinito suave
   useEffect(() => {
     const scrollEl = scrollRef.current;
     if (!scrollEl) return;
+
     let scrollPos = 0;
-    const speed = 0.3; // pixels por frame, ajustável
+    const speed = 0.3;
 
     const step = () => {
       scrollPos += speed;
@@ -53,7 +53,7 @@ export default function Ticker() {
     return () => cancelAnimationFrame(requestRef.current);
   }, []);
 
-  const loopSymbols = [...SYMBOLS, ...SYMBOLS];
+  const loopSymbols = [...SYMBOLS, ...SYMBOLS]; // duplicação para loop contínuo
 
   return (
     <div className="ticker-wrapper">
@@ -62,13 +62,11 @@ export default function Ticker() {
           const p = prices[s.symbol] || { price: 0, change: 0 };
           const up = p.change > 0;
           const arrow = up ? '▲' : p.change < 0 ? '▼' : '';
-          const color = up ? 'green' : p.change < 0 ? 'red' : 'white';
+          const color = up ? '#00ff7f' : p.change < 0 ? '#ff4c4c' : '#fff';
           return (
             <div key={idx} className="ticker-item">
               <span className="ticker-name">{s.name}</span>
-              <span className="price" style={{ color }}>
-                {p.price.toFixed(2)}
-              </span>
+              <span className="price" style={{ color }}>{p.price.toFixed(2)}</span>
               <span className="arrow" style={{ color }}>{arrow}</span>
             </div>
           );

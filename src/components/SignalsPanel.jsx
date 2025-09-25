@@ -40,7 +40,7 @@ export default function SignalsPanel({ signals }) {
           const tipo = sig.tipo || sig.direcao || 'N/A';
           const preco = sig.preco || 'N/A';
           const horario = sig.horario || sig.hora || 'N/A';
-          const status = sig.status === "INATIVO" ? "INATIVO" : "ATIVO";
+          const status = sig.status?.toUpperCase() === "INATIVO" ? "INATIVO" : "ATIVO";
 
           return (
             <div
@@ -99,7 +99,6 @@ export default function SignalsPanel({ signals }) {
           </div>
         </div>
       )}
-
     </div>
   );
 }

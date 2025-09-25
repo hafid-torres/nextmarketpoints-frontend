@@ -1,148 +1,31 @@
 .dashboard-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 40px;
-  padding: 0 30px;
-  width: 100%;
-  box-sizing: border-box;
+  gap: 10px; /* espaçamento entre painéis */
+  margin-top: 40px; /* distância da seção de clocks */
+  margin-left: 70px; /* aumenta a margem esquerda do bloco */
+  flex-wrap: nowrap;
+}
+
+.dashboard-panel {
+  flex: 25 0 320px; /* largura fixa dos painéis */
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
-/* Painéis gerais */
-.panel-box {
-  background: rgba(0,0,0,0.65);
-  border-radius: 12px;
-  padding: 10px 12px;
-  color: #fff;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-  flex: 0 0 320px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 80px;
-  max-height: 80px;
+/* Painel esquerdo contém MarketForce + FearIndex empilhados */
+.left-panel {
+  min-height: 215px; /* ajusta para ocupar a mesma altura do central */
+  margin-right: 15px; /* aumenta o espaço para o painel central */
 }
 
-/* Painel esquerdo */
-.panel-left { max-width: 320px; }
-/* Painel central */
-.panel-center { max-width: 320px; display: flex; justify-content: center; align-items: center; }
-/* Painel direito */
-.panel-right { max-width: 320px; }
-
-/* Organiza métricas lado a lado no painel esquerdo */
-.panel-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+/* Painel central Volatilidade */
+.center-panel {
+  min-height: 215px;
 }
 
-.metric {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 140px;
-  margin: 0;
+/* Painel direito Top Assets */
+.right-panel {
+  min-height: 215px;
 }
-
-.panel-title {
-  font-weight: bold;
-  font-size: 13px;
-  margin-bottom: 6px;
-}
-
-.panel-value {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 2px;
-}
-
-/* Mensagem específica do índice do medo */
-.metric.fear-index .panel-text.fear-text {
-  font-size: 11px;
-  color: #ccc;
-  margin-top: 6px; /* adiciona espaço acima da mensagem */
-}
-
-/* Barra de pressão */
-.pressure-bar {
-  display: flex;
-  height: 12px;
-  width: 100%;
-  border-radius: 6px;
-  overflow: hidden;
-  background: rgba(255,255,255,0.1);
-  margin-bottom: 4px;
-  position: relative;
-}
-
-.pressure-buyer {
-  background-color: #00ff00;
-  height: 100%;
-  transition: width 1s ease-in-out;
-}
-
-.pressure-seller {
-  background-color: #ff0000;
-  height: 100%;
-  transition: width 1s ease-in-out;
-}
-
-.metric.market-strength .panel-text {
-  font-size: 11px; /* menor */
-  margin-top: 4px; /* espaço acima */
-}
-
-/* Texto da barra de pressão menor */
-.pressure-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 9px; /* menor que o padrão anterior */
-  margin-top: 2px;
-  width: 100%;
-  padding: 0 2px;
-}
-
-.pressure-labels span:first-child { color: #00ff00; } /* Buy */
-.pressure-labels span:last-child { color: #ff0000; }   /* Sell */
-
-/* Barra do medo */
-.fear-bar {
-  position: relative;
-  height: 12px;
-  width: 100%;
-  background: rgba(255,255,255,0.1);
-  border-radius: 6px;
-  margin-bottom: 4px;
-  overflow: hidden;
-}
-
-.fear-fill {
-  height: 100%;
-  width: 0%;
-  border-radius: 6px;
-  transition: width 1s ease-in-out, background 0.5s ease-in-out;
-}
-
-.fear-percentage {
-  position: absolute;
-  right: 4px;
-  top: 0;
-  font-size: 10px;
-  color: #fff;
-  font-weight: bold;
-}
-
-/* Ativos (painel direito) */
-.asset-row {
-  display: flex;
-  align-items: center;
-  font-size: 13px;
-  margin-bottom: 4px;
-}
-
-.asset-symbol { margin-right: 8px; }
-.asset-price { font-weight: bold; margin-right: 8px; }
-.asset-trend.up { color: #00ff7f; }
-.asset-trend.down { color: #ff4c4c; }

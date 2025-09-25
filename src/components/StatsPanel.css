@@ -1,20 +1,24 @@
-/* StatsPanel.css */
 .panel.stats-panel {
-  background: var(--panel);
+  background: #0a0a0f;
   padding: 16px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  /* Efeito neon azul */
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(0, 255, 255, 0.2), 0 0 30px rgba(0, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  max-height: 350px; /* altura fixa igual aos outros painéis */
+  overflow: hidden;
 }
 
 .panel-header h3 {
+  width: 100%;
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  color: #00f5ff;
 }
 
 .chart-wrapper {
@@ -23,6 +27,8 @@
   justify-content: center;
   position: relative;
   margin-bottom: 12px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .pie-container {
@@ -111,7 +117,7 @@
 }
 
 .popup-content {
-  background: var(--panel);
+  background: #0a0a0f;
   padding: 20px;
   border-radius: 12px;
   max-height: 70%;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 
 export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
@@ -9,13 +9,25 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     news: []
   });
 
+  const socketRef = useRef(null);
+
   useEffect(() => {
     if (!url) {
       console.error("⚠️ useSocket: URL do backend não definida!");
       return;
     }
 
-    const socket = io(url, { transports: ["websocket"] });
+    // Evita reconexão duplicada
+    if (socketRef.current) return;
+
+    const socket = io(url, {
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000
+    });
+
+    socketRef.current = socket;
 
     const handleTicker = data =>
       setState(prev => ({ ...prev, ticker: data || {} }));
@@ -24,11 +36,14 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
       setState(prev => ({ ...prev, volatility: data || {} }));
 
     const handleSignal = data => {
-      if (!data) return;
-      setState(prev => ({
-        ...prev,
-        signals: [data, ...(prev.signals || [])].slice(0, 50)
-      }));
+      if (!data || !data.id) return;
+      setState(prev => {
+        const exists = prev.signals.find(s => s.id === data.id);
+        const newSignals = exists
+          ? prev.signals
+          : [data, ...(prev.signals || [])].slice(0, 50);
+        return { ...prev, signals: newSignals };
+      });
     };
 
     const handleNews = data => {
@@ -48,7 +63,14 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     socket.on("signal", handleSignal);
     socket.on("news", handleNews);
 
-    return () => socket.disconnect();
+    return () => {
+      socket.off("ticker", handleTicker);
+      socket.off("volatility", handleVolatility);
+      socket.off("signal", handleSignal);
+      socket.off("news", handleNews);
+      socket.disconnect();
+      socketRef.current = null;
+    };
   }, [url]);
 
   return state;

@@ -2,34 +2,45 @@
   background: rgba(0,0,0,0.85);
   border: 1px solid #00bfff;
   border-radius: 8px;
-  padding: 10px;
-  width: 300px;
-  height: 35%; /* mantém tamanho original */
+  box-shadow: 0 0 10px rgba(0,191,255,0.5);
   display: flex;
   flex-direction: column;
   color: #fff;
-  box-shadow: 0 0 10px rgba(0,191,255,0.5);
+  overflow: hidden;
+  height: 50%; /* metade do container, abaixo do signal panel */
 }
 
-.news-header {
+.panel-header {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
   color: #00bfff;
   text-shadow: 0 0 6px #00bfff;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  text-align: left;      /* alinha à esquerda */
+  margin-left: 10px;     /* afasta do lado esquerdo */
+  margin-top: 10px;       /* sobe o título mais para cima */
 }
 
-.news-list {
-  overflow-y: auto; /* scroll ativo */
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 100%;
+  gap: 10px;
+  padding-right: 6px;
 }
+
+.panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+.panel-body::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+.panel-body::-webkit-scrollbar-thumb { background: rgba(0,191,255,0.3); border-radius: 3px; }
+.panel-body::-webkit-scrollbar-thumb:hover { background: rgba(0,191,255,0.5); }
 
 .news-item {
   background: rgba(0,0,0,0.6);
-  padding: 8px;
+  padding: 6px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -45,24 +56,7 @@
   box-shadow: 0 0 6px #00bfff;
 }
 
-.news-title {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.news-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: #ccc;
-  margin-top: 2px;
-}
-
-.news-source {
-  font-style: italic;
-}
-
-.news-time {
-  font-size: 11px;
-  color: #ccc;
-}
+.news-title { font-size: 13px; font-weight: 600; }
+.news-meta { display: flex; justify-content: space-between; font-size: 11px; color: #ccc; margin-top: 2px; }
+.news-source { font-style: italic; }
+.news-time { font-size: 11px; color: #ccc; }

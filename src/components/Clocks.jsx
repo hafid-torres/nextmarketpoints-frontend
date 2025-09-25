@@ -20,13 +20,13 @@ export default function Clocks() {
         const w = c.width, h = c.height, r = w/2;
         ctx.clearRect(0,0,w,h);
         ctx.save();
-        ctx.translate(r,r);
+        ctx.translate(r,r); // centraliza o zero do canvas
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
 
-        // relógio
+        // círculo externo
         ctx.beginPath();
-        ctx.arc(0,0,r-1,0,2*Math.PI);
+        ctx.arc(0,0,r-2,0,2*Math.PI);
         ctx.stroke();
 
         const sec = now.getSeconds();
@@ -75,7 +75,7 @@ export default function Clocks() {
         return (
           <div key={z.tz} className="clock">
             <div className="label">{z.flag} {z.label}</div>
-            <canvas className="analog-clock" width="60" height="60" data-tz={z.tz}></canvas>
+            <canvas className="analog-clock" width="80" height="80" data-tz={z.tz}></canvas>
             <div className="status"><span className="dot" style={{background:color}}></span>{status}</div>
             <div className="time">{hoursMin}</div>
           </div>
