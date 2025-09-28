@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import "./Ticker.css";
 
-// Lista de ativos principais atualizada conforme backend/EA
 const SYMBOLS = [
   { symbol: 'GOLD', name: 'GOLD' },
   { symbol: 'SILVER', name: 'SILVER' },
@@ -11,30 +10,42 @@ const SYMBOLS = [
   { symbol: 'AUDUSD', name: 'AUDUSD' },
   { symbol: 'USDCAD', name: 'USDCAD' },
   { symbol: 'NZDUSD', name: 'NZDUSD' },
-  { symbol: 'USDCHF', name: 'USDCHF' }
+  { symbol: 'USDCHF', name: 'USDCHF' },
+  { symbol: 'EURJPY', name: 'EURJPY' },
+  { symbol: 'BTCUSD', name: 'BTCUSD' },
+  { symbol: 'ETHUSD', name: 'ETHUSD' },
+  { symbol: 'LTCUSD', name: 'LTCUSD' },
+  { symbol: 'XRPUSD', name: 'XRPUSD' },
+  { symbol: 'BCHUSD', name: 'BCHUSD' },
+  { symbol: 'US500Cash', name: 'US500Cash' },
+  { symbol: 'US30Cash', name: 'US30Cash' },
+  { symbol: 'US100Cash', name: 'US100Cash' },
+  { symbol: 'US2000Cash', name: 'US2000Cash' },
+  { symbol: 'UK100Cash', name: 'UK100Cash' },
+  { symbol: 'GER40Cash', name: 'GER40Cash' },
+  { symbol: 'JP225Cash', name: 'JP225Cash' },
+  { symbol: 'NIKKEI', name: 'NIKKEI' },
+  { symbol: 'HK50Cash', name: 'HK50Cash' },
+  { symbol: 'ChinaHCash', name: 'ChinaHCash' },
+  { symbol: 'Apple', name: 'Apple' },
+  { symbol: 'Microsoft', name: 'Microsoft' },
+  { symbol: 'Amazon', name: 'Amazon' },
+  { symbol: 'Google', name: 'Google' },
+  { symbol: 'Tesla', name: 'Tesla' },
+  { symbol: 'Facebook', name: 'Facebook' },
+  { symbol: 'Nvidia', name: 'Nvidia' },
+  { symbol: 'Netlix', name: 'Netlix' },
+  { symbol: 'JPMorgan', name: 'JPMorgan' },
+  { symbol: 'OILCash', name: 'OILCash' },
+  { symbol: 'NGASCash', name: 'NGASCash' },
+  { symbol: 'XPTUSD', name: 'XPTUSD' },
+  { symbol: 'XPDUSD', name: 'XPDUSD' },
+  { symbol: 'VIX-OCT25', name: 'VIX-OCT25' }
 ];
 
-export default function Ticker() {
-  const [prices, setPrices] = useState({});
+export default function Ticker({ prices = {} }) {
   const scrollRef = useRef();
   const requestRef = useRef();
-
-  // Gera preços fake apenas como fallback
-  const generateFakePrices = (prevPrices) => {
-    const newPrices = {};
-    SYMBOLS.forEach(s => {
-      const prev = prevPrices[s.symbol]?.price || 1000;
-      const change = (Math.random() - 0.5) * 10;
-      newPrices[s.symbol] = { price: +(prev + change).toFixed(2), change: +(change.toFixed(2)) };
-    });
-    return newPrices;
-  };
-
-  // Atualiza preços fake enquanto não chegam dados reais
-  useEffect(() => {
-    const interval = setInterval(() => setPrices(prev => generateFakePrices(prev)), 1500);
-    return () => clearInterval(interval);
-  }, []);
 
   // Loop infinito suave
   useEffect(() => {
