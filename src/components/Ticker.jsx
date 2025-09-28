@@ -47,7 +47,6 @@ export default function Ticker({ prices = {} }) {
   const scrollRef = useRef();
   const requestRef = useRef();
 
-  // Loop infinito suave
   useEffect(() => {
     const scrollEl = scrollRef.current;
     if (!scrollEl) return;
@@ -66,20 +65,24 @@ export default function Ticker({ prices = {} }) {
     return () => cancelAnimationFrame(requestRef.current);
   }, []);
 
-  const loopSymbols = [...SYMBOLS, ...SYMBOLS]; // duplicação para loop contínuo
+  const loopSymbols = [...SYMBOLS, ...SYMBOLS];
 
   return (
     <div className="ticker-wrapper">
       <div className="ticker-scroll" ref={scrollRef}>
         {loopSymbols.map((s, idx) => {
           const p = prices[s.symbol] || { price: 0, change: 0 };
-          const up = p.change > 0;
-          const arrow = up ? '▲' : p.change < 0 ? '▼' : '';
-          const color = up ? '#00ff7f' : p.change < 0 ? '#ff4c4c' : '#fff';
+          // prevenção de crash
+          const price = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
+          const change = typeof p.change === "number" ? p.change : 0;
+          const up = change > 0;
+          const arrow = up ? '▲' : change < 0 ? '▼' : '';
+          const color = up ? '#00ff7f' : change < 0 ? '#ff4c4c' : '#fff';
+
           return (
             <div key={idx} className="ticker-item">
               <span className="ticker-name">{s.name}</span>
-              <span className="price" style={{ color }}>{p.price.toFixed(2)}</span>
+              <span className="price" style={{ color }}>{price}</span>
               <span className="arrow" style={{ color }}>{arrow}</span>
             </div>
           );
