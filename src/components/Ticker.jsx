@@ -1,16 +1,17 @@
 import { useEffect, useState, useRef } from "react";
 import "./Ticker.css";
 
+// Lista de ativos principais atualizada conforme backend/EA
 const SYMBOLS = [
-  { symbol: 'XAUUSD', name: 'XAUUSD' },
-  { symbol: 'XAGUSD', name: 'XAGUSD' },
+  { symbol: 'GOLD', name: 'GOLD' },
+  { symbol: 'SILVER', name: 'SILVER' },
   { symbol: 'EURUSD', name: 'EURUSD' },
-  { symbol: 'USDJPY', name: 'USDJPY' },
   { symbol: 'GBPUSD', name: 'GBPUSD' },
-  { symbol: 'BTCUSD', name: 'BTCUSD' },
-  { symbol: 'ETHUSD', name: 'ETHUSD' },
-  { symbol: 'SPXUSD', name: 'SPXUSD' },
-  { symbol: 'NSXUSD', name: 'NSXUSD' }
+  { symbol: 'USDJPY', name: 'USDJPY' },
+  { symbol: 'AUDUSD', name: 'AUDUSD' },
+  { symbol: 'USDCAD', name: 'USDCAD' },
+  { symbol: 'NZDUSD', name: 'NZDUSD' },
+  { symbol: 'USDCHF', name: 'USDCHF' }
 ];
 
 export default function Ticker() {
@@ -18,6 +19,7 @@ export default function Ticker() {
   const scrollRef = useRef();
   const requestRef = useRef();
 
+  // Gera preços fake apenas como fallback
   const generateFakePrices = (prevPrices) => {
     const newPrices = {};
     SYMBOLS.forEach(s => {
@@ -28,7 +30,7 @@ export default function Ticker() {
     return newPrices;
   };
 
-  // Atualiza preços fake
+  // Atualiza preços fake enquanto não chegam dados reais
   useEffect(() => {
     const interval = setInterval(() => setPrices(prev => generateFakePrices(prev)), 1500);
     return () => clearInterval(interval);
