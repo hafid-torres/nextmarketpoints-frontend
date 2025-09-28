@@ -17,23 +17,30 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
       return;
     }
 
-    // Evita reconexão duplicada
+    // Evita múltiplas conexões
     if (socketRef.current) return;
 
     const socket = io(url, {
       transports: ["websocket"],
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10,
       reconnectionDelay: 2000
     });
 
     socketRef.current = socket;
 
-    const handleTicker = data =>
-      setState(prev => ({ ...prev, ticker: data || {} }));
+    // -------------------------------
+    // Handlers para cada evento
+    // -------------------------------
+    const handleTicker = data => {
+      if (!data) return;
+      setState(prev => ({ ...prev, ticker: { ...prev.ticker, ...data } }));
+    };
 
-    const handleVolatility = data =>
-      setState(prev => ({ ...prev, volatility: data || {} }));
+    const handleVolatility = data => {
+      if (!data) return;
+      setState(prev => ({ ...prev, volatility: { ...prev.volatility, ...data } }));
+    };
 
     const handleSignal = data => {
       if (!data || !data.id) return;
@@ -55,6 +62,9 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
       }));
     };
 
+    // -------------------------------
+    // Eventos do Socket
+    // -------------------------------
     socket.on("connect", () => console.log("✅ Conectado ao backend via Socket.IO!"));
     socket.on("disconnect", () => console.log("⚠️ Desconectado do backend!"));
 
@@ -62,12 +72,15 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     socket.on("volatility", handleVolatility);
     socket.on("signal", handleSignal);
     socket.on("news", handleNews);
+    socket.on("candle", data => handleTicker({ [data.symbol]: data.close })); // atualiza ticker também
 
+    // Cleanup ao desmontar
     return () => {
       socket.off("ticker", handleTicker);
       socket.off("volatility", handleVolatility);
       socket.off("signal", handleSignal);
       socket.off("news", handleNews);
+      socket.off("candle");
       socket.disconnect();
       socketRef.current = null;
     };

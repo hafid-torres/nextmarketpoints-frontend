@@ -21,8 +21,14 @@ export default function App() {
   const backendSocketURL = import.meta.env.VITE_BACKEND_SOCKET;
   const backendHTTPURL = import.meta.env.VITE_BACKEND_URL;
 
+  // -------------------------------
+  // Conexão via Hook de Socket
+  // -------------------------------
   const { ticker, volatility, signals, news } = useSocket(backendSocketURL);
 
+  // -------------------------------
+  // Processamento de sinais ativos e fechados
+  // -------------------------------
   const activeSignals = useMemo(
     () => signals.filter(s => s.status === "ativo"),
     [signals]
@@ -32,6 +38,9 @@ export default function App() {
     [signals]
   );
 
+  // -------------------------------
+  // Insights processados a partir das notícias
+  // -------------------------------
   const insights = useMemo(() => {
     return news.map((n, idx) => {
       let tipo = "noticia";
