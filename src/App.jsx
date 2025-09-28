@@ -66,13 +66,14 @@ export default function App() {
       <Header />
 
       {/* Ticker */}
-      <Ticker prices={ticker} />
+      {/* Proteção: se ticker estiver vazio, passa um objeto vazio */}
+      <Ticker prices={ticker || {}} />
 
       {/* Relógios centralizados */}
       <Clocks />
 
       {/* Dashboard Top */}
-      <DashboardTop volatility={volatility} />
+      <DashboardTop volatility={volatility || {}} />
 
       {/* Main Grid: Chart + Side Panels */}
       <div className="main-grid">
@@ -81,21 +82,21 @@ export default function App() {
         </div>
 
         <div className="side-panels">
-          <SignalsPanel signals={activeSignals} backendURL={backendHTTPURL} />
-          <NewsPanel news={news} backendURL={backendHTTPURL} />
+          <SignalsPanel signals={activeSignals || []} backendURL={backendHTTPURL} />
+          <NewsPanel news={news || []} backendURL={backendHTTPURL} />
         </div>
       </div>
 
       {/* Extra Section: Painéis ativos, stats e insights */}
       <div className="extra-section">
         <div className="active-panel-wrapper">
-          <ActiveSignalsPanel signals={signals} backendURL={backendHTTPURL} />
+          <ActiveSignalsPanel signals={signals || []} backendURL={backendHTTPURL} />
         </div>
         <div className="stats-panel-wrapper">
-          <StatsPanel closedSignals={closedSignals} backendURL={backendHTTPURL} />
+          <StatsPanel closedSignals={closedSignals || []} backendURL={backendHTTPURL} />
         </div>
         <div className="insights-panel-wrapper">
-          <InsightsPanel insights={insights} backendURL={backendHTTPURL} />
+          <InsightsPanel insights={insights || []} backendURL={backendHTTPURL} />
         </div>
       </div>
 

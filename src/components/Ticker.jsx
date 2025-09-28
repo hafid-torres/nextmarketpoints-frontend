@@ -47,6 +47,12 @@ export default function Ticker({ prices = {} }) {
   const scrollRef = useRef();
   const requestRef = useRef();
 
+  // Debug: ver o que chega no componente
+  useEffect(() => {
+    console.log("📈 Ticker recebido no componente:", prices);
+  }, [prices]);
+
+  // Loop infinito suave
   useEffect(() => {
     const scrollEl = scrollRef.current;
     if (!scrollEl) return;
@@ -65,16 +71,16 @@ export default function Ticker({ prices = {} }) {
     return () => cancelAnimationFrame(requestRef.current);
   }, []);
 
-  const loopSymbols = [...SYMBOLS, ...SYMBOLS];
+  const loopSymbols = [...SYMBOLS, ...SYMBOLS]; // duplicação para loop contínuo
 
   return (
     <div className="ticker-wrapper">
       <div className="ticker-scroll" ref={scrollRef}>
         {loopSymbols.map((s, idx) => {
-          const p = prices[s.symbol] || { price: 0, change: 0 };
-          // prevenção de crash
+          const p = prices[s.symbol] || {};
           const price = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
           const change = typeof p.change === "number" ? p.change : 0;
+
           const up = change > 0;
           const arrow = up ? '▲' : change < 0 ? '▼' : '';
           const color = up ? '#00ff7f' : change < 0 ? '#ff4c4c' : '#fff';

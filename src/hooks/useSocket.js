@@ -35,12 +35,15 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     const handleTicker = data => {
       if (!data) return;
 
-      // Pega o symbol e define price e change corretamente
+      // Definir symbol, price e change corretos
       const symbol = data.symbol;
-      const price = data.price ?? data.close ?? 0;
-      const change = data.change ?? 0;
-
       if (!symbol) return;
+
+      // Se vier close em vez de price
+      const price = data.price ?? data.close ?? 0;
+      // Calcula change relativo se não estiver fornecido
+      const prevPrice = state.ticker[symbol]?.price ?? price;
+      const change = data.change ?? +(price - prevPrice).toFixed(2);
 
       setState(prev => ({
         ...prev,
@@ -100,7 +103,7 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [url]);
+  }, [url, state.ticker]);
 
   return state;
 }
