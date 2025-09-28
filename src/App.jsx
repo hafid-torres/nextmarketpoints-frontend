@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import DashboardTop from './components/DashboardTop';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -21,14 +21,27 @@ export default function App() {
   const backendSocketURL = import.meta.env.VITE_BACKEND_SOCKET;
   const backendHTTPURL = import.meta.env.VITE_BACKEND_URL;
 
-  // -------------------------------
-  // Conexão via Hook de Socket
-  // -------------------------------
   const { ticker, volatility, signals, news } = useSocket(backendSocketURL);
 
   // -------------------------------
-  // Processamento de sinais ativos e fechados
+  // Debug mínimo: logs para verificar dados recebidos
   // -------------------------------
+  useEffect(() => {
+    console.log("📈 Ticker atualizado:", ticker);
+  }, [ticker]);
+
+  useEffect(() => {
+    console.log("⚡ Volatilidade atualizada:", volatility);
+  }, [volatility]);
+
+  useEffect(() => {
+    console.log("📊 Signals atualizadas:", signals);
+  }, [signals]);
+
+  useEffect(() => {
+    console.log("📰 News atualizadas:", news);
+  }, [news]);
+
   const activeSignals = useMemo(
     () => signals.filter(s => s.status === "ativo"),
     [signals]
@@ -38,9 +51,6 @@ export default function App() {
     [signals]
   );
 
-  // -------------------------------
-  // Insights processados a partir das notícias
-  // -------------------------------
   const insights = useMemo(() => {
     return news.map((n, idx) => {
       let tipo = "noticia";

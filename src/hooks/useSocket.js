@@ -72,7 +72,12 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     socket.on("volatility", handleVolatility);
     socket.on("signal", handleSignal);
     socket.on("news", handleNews);
-    socket.on("candle", data => handleTicker({ [data.symbol]: data.close })); // atualiza ticker também
+
+    // Atualiza ticker automaticamente quando receber candle
+    socket.on("candle", data => {
+      if (!data || !data.symbol || data.close === undefined) return;
+      handleTicker({ [data.symbol]: data.close });
+    });
 
     // Cleanup ao desmontar
     return () => {
