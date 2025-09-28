@@ -79,7 +79,12 @@ export default function Ticker({ prices = {} }) {
         {loopSymbols.map((s, idx) => {
           const p = prices[s.symbol] || {};
           const price = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
-          const change = typeof p.change === "number" ? p.change : 0;
+          
+          // Calcula change se não veio do backend
+          let change = typeof p.change === "number" ? p.change : 0;
+          if (change === 0 && prices[s.symbol]?.prevPrice) {
+            change = p.price - prices[s.symbol].prevPrice;
+          }
 
           const up = change > 0;
           const arrow = up ? '▲' : change < 0 ? '▼' : '';
