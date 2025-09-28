@@ -34,7 +34,21 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     // -------------------------------
     const handleTicker = data => {
       if (!data) return;
-      setState(prev => ({ ...prev, ticker: { ...prev.ticker, ...data } }));
+
+      // Pega o symbol e define price e change corretamente
+      const symbol = data.symbol;
+      const price = data.price ?? data.close ?? 0;
+      const change = data.change ?? 0;
+
+      if (!symbol) return;
+
+      setState(prev => ({
+        ...prev,
+        ticker: {
+          ...prev.ticker,
+          [symbol]: { price, change }
+        }
+      }));
     };
 
     const handleVolatility = data => {
@@ -74,10 +88,7 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     socket.on("news", handleNews);
 
     // Atualiza ticker automaticamente quando receber candle
-    socket.on("candle", data => {
-      if (!data || !data.symbol || data.close === undefined) return;
-      handleTicker({ [data.symbol]: data.close });
-    });
+    socket.on("candle", handleTicker);
 
     // Cleanup ao desmontar
     return () => {
@@ -85,7 +96,7 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
       socket.off("volatility", handleVolatility);
       socket.off("signal", handleSignal);
       socket.off("news", handleNews);
-      socket.off("candle");
+      socket.off("candle", handleTicker);
       socket.disconnect();
       socketRef.current = null;
     };
