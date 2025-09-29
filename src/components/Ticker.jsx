@@ -1,82 +1,77 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Ticker.css";
 
 const SYMBOLS = [
-  { symbol: 'GOLD', name: 'GOLD' }, { symbol: 'SILVER', name: 'SILVER' },
-  { symbol: 'EURUSD', name: 'EURUSD' }, { symbol: 'GBPUSD', name: 'GBPUSD' },
-  { symbol: 'USDJPY', name: 'USDJPY' }, { symbol: 'AUDUSD', name: 'AUDUSD' },
-  { symbol: 'USDCAD', name: 'USDCAD' }, { symbol: 'NZDUSD', name: 'NZDUSD' },
-  { symbol: 'USDCHF', name: 'USDCHF' }, { symbol: 'EURJPY', name: 'EURJPY' },
-  { symbol: 'BTCUSD', name: 'BTCUSD' }, { symbol: 'ETHUSD', name: 'ETHUSD' },
-  { symbol: 'LTCUSD', name: 'LTCUSD' }, { symbol: 'XRPUSD', name: 'XRPUSD' },
-  { symbol: 'BCHUSD', name: 'BCHUSD' }, { symbol: 'US500Cash', name: 'US500Cash' },
-  { symbol: 'US30Cash', name: 'US30Cash' }, { symbol: 'US100Cash', name: 'US100Cash' },
-  { symbol: 'US2000Cash', name: 'US2000Cash' }, { symbol: 'UK100Cash', name: 'UK100Cash' },
-  { symbol: 'GER40Cash', name: 'GER40Cash' }, { symbol: 'JP225Cash', name: 'JP225Cash' },
-  { symbol: 'NIKKEI', name: 'NIKKEI' }, { symbol: 'HK50Cash', name: 'HK50Cash' },
-  { symbol: 'ChinaHCash', name: 'ChinaHCash' }, { symbol: 'Apple', name: 'Apple' },
-  { symbol: 'Microsoft', name: 'Microsoft' }, { symbol: 'Amazon', name: 'Amazon' },
-  { symbol: 'Google', name: 'Google' }, { symbol: 'Tesla', name: 'Tesla' },
-  { symbol: 'Facebook', name: 'Facebook' }, { symbol: 'Nvidia', name: 'Nvidia' },
-  { symbol: 'Netlix', name: 'Netlix' }, { symbol: 'JPMorgan', name: 'JPMorgan' },
-  { symbol: 'OILCash', name: 'OILCash' }, { symbol: 'NGASCash', name: 'NGASCash' },
-  { symbol: 'XPTUSD', name: 'XPTUSD' }, { symbol: 'XPDUSD', name: 'XPDUSD' },
-  { symbol: 'VIX-OCT25', name: 'VIX-OCT25' }
+  "GOLD","SILVER","EURUSD","GBPUSD","USDJPY","AUDUSD","USDCAD","NZDUSD","USDCHF",
+  "EURJPY","BTCUSD","ETHUSD","LTCUSD","XRPUSD","BCHUSD","US500Cash","US30Cash",
+  "US100Cash","US2000Cash","UK100Cash","GER40Cash","JP225Cash","NIKKEI","HK50Cash",
+  "ChinaHCash","Apple","Microsoft","Amazon","Google","Tesla","Facebook","Nvidia",
+  "Netlix","JPMorgan","OILCash","NGASCash","XPTUSD","XPDUSD","VIX-OCT25"
 ];
 
 export default function Ticker({ prices = {} }) {
   const scrollRef = useRef();
-  const requestRef = useRef();
   const prevPricesRef = useRef({});
+  const [displayPrices, setDisplayPrices] = useState({});
 
-  // Debug: log
+  // ======================
+  // Atualiza displayPrices suavemente
+  // ======================
   useEffect(() => {
-    console.log("📈 Ticker recebido:", prices);
-  }, [prices]);
+    const interval = setInterval(() => {
+      const updated = {};
+      SYMBOLS.forEach(symbol => {
+        const target = prices[symbol]?.price ?? prevPricesRef.current[symbol] ?? 0;
+        const prev = displayPrices[symbol] ?? prevPricesRef.current[symbol] ?? target;
+        // interpolação suave
+        const diff = target - prev;
+        updated[symbol] = +(prev + diff * 0.2).toFixed(2);
+      });
+      setDisplayPrices(updated);
+      prevPricesRef.current = updated;
+    }, 50);
+    return () => clearInterval(interval);
+  }, [prices, displayPrices]);
 
-  // Loop de scroll suave
+  // ======================
+  // Scroll contínuo
+  // ======================
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     let pos = 0;
-    const speed = 0.25;
-
+    const speed = 0.3;
+    let req;
     const step = () => {
       pos += speed;
       if (pos >= el.scrollWidth / 2) pos = 0;
       el.style.transform = `translateX(-${pos}px)`;
-      requestRef.current = requestAnimationFrame(step);
+      req = requestAnimationFrame(step);
     };
-
-    requestRef.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(requestRef.current);
+    req = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(req);
   }, []);
 
+  // ======================
+  // Loop duplo para scroll infinito
+  // ======================
   const loopSymbols = [...SYMBOLS, ...SYMBOLS];
 
   return (
     <div className="ticker-wrapper">
       <div className="ticker-scroll" ref={scrollRef}>
-        {loopSymbols.map((s, idx) => {
-          const current = prices[s.symbol];
-          const prev = prevPricesRef.current[s.symbol] || { price: 0 };
-
-          const priceNum = current?.price ?? prev.price ?? 0;
-          const price = priceNum.toFixed(2);
-
-          const change = current?.price != null ? priceNum - prev.price : 0;
-
+        {loopSymbols.map((symbol, idx) => {
+          const price = displayPrices[symbol] ?? 0;
+          const prev = prevPricesRef.current[symbol] ?? price;
+          const change = +(price - prev).toFixed(2);
           const up = change > 0;
-          const arrow = up ? '▲' : change < 0 ? '▼' : '';
-          const color = up ? '#00ff7f' : change < 0 ? '#ff4c4c' : '#fff';
-
-          // Atualiza prevPrices somente após cálculo
-          prevPricesRef.current[s.symbol] = { price: priceNum };
+          const arrow = up ? "▲" : change < 0 ? "▼" : "";
+          const color = up ? "#00ff7f" : change < 0 ? "#ff4c4c" : "#fff";
 
           return (
             <div key={idx} className="ticker-item">
-              <span className="ticker-name">{s.name}</span>
-              <span className="price" style={{ color }}>{price}</span>
+              <span className="ticker-name">{symbol}</span>
+              <span className="price" style={{ color }}>{price.toFixed(2)}</span>
               <span className="arrow" style={{ color }}>{arrow}</span>
             </div>
           );

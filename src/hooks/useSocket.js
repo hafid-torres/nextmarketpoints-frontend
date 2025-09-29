@@ -1,14 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
 export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
-  const [ticker, setTicker] = useState({});
-  const [volatility, setVolatility] = useState({});
-  const [signals, setSignals] = useState([]);
-  const [news, setNews] = useState([]);
+  const [state, setState] = useState({
+    ticker: {},
+    volatility: {},
+    signals: [],
+    news: []
+  });
 
   const socketRef = useRef(null);
-  const tickerRef = useRef({}); // Para manter o estado atual do ticker
 
   useEffect(() => {
     if (!url) {
@@ -16,67 +17,77 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
       return;
     }
 
-    if (socketRef.current) return; // Evita múltiplas conexões
+    if (socketRef.current) return; // evita múltiplas conexões
 
     const socket = io(url, {
       transports: ["websocket"],
       reconnection: true,
-      reconnectionAttempts: 10,
+      reconnectionAttempts: 20,
       reconnectionDelay: 2000
     });
 
     socketRef.current = socket;
 
-    // -------------------------------
+    console.log("🔌 Conectando ao backend via Socket.IO...");
+
+    // ======================
     // Handlers
-    // -------------------------------
+    // ======================
     const handleTicker = (data) => {
       if (!data || !data.symbol) return;
-      const symbol = data.symbol;
-      const price = data.price ?? data.close ?? 0;
-      const prevPrice = tickerRef.current[symbol]?.price ?? price;
-      const change = data.change ?? +(price - prevPrice).toFixed(2);
-
-      tickerRef.current[symbol] = { price, change };
-      setTicker({ ...tickerRef.current });
+      setState(prev => {
+        const prevPrice = prev.ticker[data.symbol]?.price ?? data.price ?? 0;
+        const price = data.price ?? data.close ?? prevPrice;
+        const change = data.change ?? +(price - prevPrice).toFixed(2);
+        console.log(`📈 [TICKER] ${data.symbol} - Price: ${price}, Change: ${change}`);
+        return {
+          ...prev,
+          ticker: { ...prev.ticker, [data.symbol]: { price, change } }
+        };
+      });
     };
 
     const handleVolatility = (data) => {
       if (!data) return;
-      setVolatility(prev => ({ ...prev, ...data }));
+      console.log("⚡ [VOLATILITY]", data);
+      setState(prev => ({ ...prev, volatility: { ...prev.volatility, ...data } }));
     };
 
     const handleSignal = (data) => {
       if (!data || !data.id) return;
-      setSignals(prev => {
-        const exists = prev.find(s => s.id === data.id);
-        if (exists) return prev;
-        return [data, ...prev].slice(0, 50);
+      setState(prev => {
+        const exists = prev.signals.find(s => s.id === data.id);
+        const newSignals = exists ? prev.signals : [data, ...prev.signals].slice(0, 50);
+        console.log("⚡ [SIGNAL] Recebido:", data);
+        return { ...prev, signals: newSignals };
       });
     };
 
     const handleNews = (data) => {
       if (!data) return;
       const newsArray = Array.isArray(data) ? data : [data];
-      setNews(prev => {
-        const combined = [...newsArray, ...prev];
-        const unique = Array.from(new Map(combined.map(n => [n.id || n.title, n])).values());
-        return unique.slice(0, 10);
-      });
+      console.log("📰 [NEWS] Recebido:", newsArray);
+      setState(prev => ({ ...prev, news: [...newsArray, ...prev.news].slice(0, 10) }));
     };
 
-    // -------------------------------
-    // Eventos do Socket
-    // -------------------------------
-    socket.on("connect", () => console.log("✅ Conectado ao backend via Socket.IO!"));
+    // ======================
+    // Socket Events
+    // ======================
+    socket.on("connect", () => {
+      console.log("✅ Conectado ao backend via Socket.IO!");
+      // Solicita snapshot completo dos ticks
+      socket.emit("requestInitialTicks");
+    });
+
     socket.on("disconnect", () => console.log("⚠️ Desconectado do backend!"));
 
     socket.on("ticker", handleTicker);
-    socket.on("candle", handleTicker); // atualiza ticker via candle também
+    socket.on("candle", handleTicker); // atualiza ticker via candle
     socket.on("volatility", handleVolatility);
     socket.on("signal", handleSignal);
     socket.on("news", handleNews);
 
+    // Cleanup
     return () => {
       socket.off("ticker", handleTicker);
       socket.off("candle", handleTicker);
@@ -88,5 +99,5 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     };
   }, [url]);
 
-  return { ticker, volatility, signals, news };
+  return state;
 }
