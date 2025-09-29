@@ -49,8 +49,10 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
 
     const handleVolatility = (data) => {
       if (!data) return;
-      console.log("⚡ [VOLATILITY]", data);
-      setState(prev => ({ ...prev, volatility: { ...prev.volatility, ...data } }));
+      // Compatível com seu formato atual de state.volatility
+      const volData = data.symbol ? { [data.symbol]: data.level ?? data.value ?? 0 } : data;
+      console.log("⚡ [VOLATILITY]", volData);
+      setState(prev => ({ ...prev, volatility: { ...prev.volatility, ...volData } }));
     };
 
     const handleSignal = (data) => {
@@ -75,14 +77,13 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     // ======================
     socket.on("connect", () => {
       console.log("✅ Conectado ao backend via Socket.IO!");
-      // Solicita snapshot completo dos ticks
-      socket.emit("requestInitialTicks");
+      socket.emit("requestInitialTicks"); // snapshot inicial
     });
 
     socket.on("disconnect", () => console.log("⚠️ Desconectado do backend!"));
 
     socket.on("ticker", handleTicker);
-    socket.on("candle", handleTicker); // atualiza ticker via candle
+    socket.on("candle", handleTicker); // mantém compatibilidade
     socket.on("volatility", handleVolatility);
     socket.on("signal", handleSignal);
     socket.on("news", handleNews);

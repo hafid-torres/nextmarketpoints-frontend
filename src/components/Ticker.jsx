@@ -23,7 +23,6 @@ export default function Ticker({ prices = {} }) {
       SYMBOLS.forEach(symbol => {
         const target = prices[symbol]?.price ?? prevPricesRef.current[symbol] ?? 0;
         const prev = displayPrices[symbol] ?? prevPricesRef.current[symbol] ?? target;
-        // interpolação suave
         const diff = target - prev;
         updated[symbol] = +(prev + diff * 0.2).toFixed(2);
       });
