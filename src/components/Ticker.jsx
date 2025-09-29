@@ -46,6 +46,7 @@ const SYMBOLS = [
 export default function Ticker({ prices = {} }) {
   const scrollRef = useRef();
   const requestRef = useRef();
+  const prevPricesRef = useRef({}); // armazenar preços anteriores para calcular change
 
   // Debug: ver o que chega no componente
   useEffect(() => {
@@ -77,14 +78,20 @@ export default function Ticker({ prices = {} }) {
     <div className="ticker-wrapper">
       <div className="ticker-scroll" ref={scrollRef}>
         {loopSymbols.map((s, idx) => {
-          const p = prices[s.symbol] || {};
-          const price = typeof p.price === "number" ? p.price.toFixed(2) : "0.00";
-          
-          // Calcula change se não veio do backend
-          let change = typeof p.change === "number" ? p.change : 0;
-          if (change === 0 && prices[s.symbol]?.prevPrice) {
-            change = p.price - prices[s.symbol].prevPrice;
-          }
+          const currentPriceData = prices[s.symbol] || {};
+          const prevPriceData = prevPricesRef.current[s.symbol] || { price: 0 };
+
+          const price = typeof currentPriceData.price === "number"
+            ? currentPriceData.price.toFixed(2)
+            : prevPriceData.price.toFixed(2);
+
+          // Calcula change com base no último preço
+          const change = typeof currentPriceData.price === "number"
+            ? currentPriceData.price - prevPriceData.price
+            : 0;
+
+          // Atualiza prevPrices
+          prevPricesRef.current[s.symbol] = { price: currentPriceData.price || prevPriceData.price };
 
           const up = change > 0;
           const arrow = up ? '▲' : change < 0 ? '▼' : '';
