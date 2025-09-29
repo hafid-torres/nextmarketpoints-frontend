@@ -2,14 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 
 export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
-  const [state, setState] = useState({
-    ticker: {},
-    volatility: {},
-    signals: [],
-    news: []
-  });
+  const [ticker, setTicker] = useState({});
+  const [volatility, setVolatility] = useState({});
+  const [signals, setSignals] = useState([]);
+  const [news, setNews] = useState([]);
 
   const socketRef = useRef(null);
+  const tickerRef = useRef({}); // Para manter o estado atual do ticker
 
   useEffect(() => {
     if (!url) {
@@ -17,8 +16,7 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
       return;
     }
 
-    // Evita múltiplas conexões
-    if (socketRef.current) return;
+    if (socketRef.current) return; // Evita múltiplas conexões
 
     const socket = io(url, {
       transports: ["websocket"],
@@ -30,53 +28,41 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     socketRef.current = socket;
 
     // -------------------------------
-    // Handlers para cada evento
+    // Handlers
     // -------------------------------
-    const handleTicker = data => {
-      if (!data) return;
-
-      // Definir symbol, price e change corretos
+    const handleTicker = (data) => {
+      if (!data || !data.symbol) return;
       const symbol = data.symbol;
-      if (!symbol) return;
-
-      // Se vier close em vez de price
       const price = data.price ?? data.close ?? 0;
-      // Calcula change relativo se não estiver fornecido
-      const prevPrice = state.ticker[symbol]?.price ?? price;
+      const prevPrice = tickerRef.current[symbol]?.price ?? price;
       const change = data.change ?? +(price - prevPrice).toFixed(2);
 
-      setState(prev => ({
-        ...prev,
-        ticker: {
-          ...prev.ticker,
-          [symbol]: { price, change }
-        }
-      }));
+      tickerRef.current[symbol] = { price, change };
+      setTicker({ ...tickerRef.current });
     };
 
-    const handleVolatility = data => {
+    const handleVolatility = (data) => {
       if (!data) return;
-      setState(prev => ({ ...prev, volatility: { ...prev.volatility, ...data } }));
+      setVolatility(prev => ({ ...prev, ...data }));
     };
 
-    const handleSignal = data => {
+    const handleSignal = (data) => {
       if (!data || !data.id) return;
-      setState(prev => {
-        const exists = prev.signals.find(s => s.id === data.id);
-        const newSignals = exists
-          ? prev.signals
-          : [data, ...(prev.signals || [])].slice(0, 50);
-        return { ...prev, signals: newSignals };
+      setSignals(prev => {
+        const exists = prev.find(s => s.id === data.id);
+        if (exists) return prev;
+        return [data, ...prev].slice(0, 50);
       });
     };
 
-    const handleNews = data => {
+    const handleNews = (data) => {
       if (!data) return;
       const newsArray = Array.isArray(data) ? data : [data];
-      setState(prev => ({
-        ...prev,
-        news: [...newsArray, ...(prev.news || [])].slice(0, 10)
-      }));
+      setNews(prev => {
+        const combined = [...newsArray, ...prev];
+        const unique = Array.from(new Map(combined.map(n => [n.id || n.title, n])).values());
+        return unique.slice(0, 10);
+      });
     };
 
     // -------------------------------
@@ -86,24 +72,21 @@ export default function useSocket(url = import.meta.env.VITE_BACKEND_SOCKET) {
     socket.on("disconnect", () => console.log("⚠️ Desconectado do backend!"));
 
     socket.on("ticker", handleTicker);
+    socket.on("candle", handleTicker); // atualiza ticker via candle também
     socket.on("volatility", handleVolatility);
     socket.on("signal", handleSignal);
     socket.on("news", handleNews);
 
-    // Atualiza ticker automaticamente quando receber candle
-    socket.on("candle", handleTicker);
-
-    // Cleanup ao desmontar
     return () => {
       socket.off("ticker", handleTicker);
+      socket.off("candle", handleTicker);
       socket.off("volatility", handleVolatility);
       socket.off("signal", handleSignal);
       socket.off("news", handleNews);
-      socket.off("candle", handleTicker);
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [url, state.ticker]);
+  }, [url]);
 
-  return state;
+  return { ticker, volatility, signals, news };
 }

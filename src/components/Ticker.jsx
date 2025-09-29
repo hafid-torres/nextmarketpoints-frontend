@@ -2,69 +2,49 @@ import { useEffect, useRef } from "react";
 import "./Ticker.css";
 
 const SYMBOLS = [
-  { symbol: 'GOLD', name: 'GOLD' },
-  { symbol: 'SILVER', name: 'SILVER' },
-  { symbol: 'EURUSD', name: 'EURUSD' },
-  { symbol: 'GBPUSD', name: 'GBPUSD' },
-  { symbol: 'USDJPY', name: 'USDJPY' },
-  { symbol: 'AUDUSD', name: 'AUDUSD' },
-  { symbol: 'USDCAD', name: 'USDCAD' },
-  { symbol: 'NZDUSD', name: 'NZDUSD' },
-  { symbol: 'USDCHF', name: 'USDCHF' },
-  { symbol: 'EURJPY', name: 'EURJPY' },
-  { symbol: 'BTCUSD', name: 'BTCUSD' },
-  { symbol: 'ETHUSD', name: 'ETHUSD' },
-  { symbol: 'LTCUSD', name: 'LTCUSD' },
-  { symbol: 'XRPUSD', name: 'XRPUSD' },
-  { symbol: 'BCHUSD', name: 'BCHUSD' },
-  { symbol: 'US500Cash', name: 'US500Cash' },
-  { symbol: 'US30Cash', name: 'US30Cash' },
-  { symbol: 'US100Cash', name: 'US100Cash' },
-  { symbol: 'US2000Cash', name: 'US2000Cash' },
-  { symbol: 'UK100Cash', name: 'UK100Cash' },
-  { symbol: 'GER40Cash', name: 'GER40Cash' },
-  { symbol: 'JP225Cash', name: 'JP225Cash' },
-  { symbol: 'NIKKEI', name: 'NIKKEI' },
-  { symbol: 'HK50Cash', name: 'HK50Cash' },
-  { symbol: 'ChinaHCash', name: 'ChinaHCash' },
-  { symbol: 'Apple', name: 'Apple' },
-  { symbol: 'Microsoft', name: 'Microsoft' },
-  { symbol: 'Amazon', name: 'Amazon' },
-  { symbol: 'Google', name: 'Google' },
-  { symbol: 'Tesla', name: 'Tesla' },
-  { symbol: 'Facebook', name: 'Facebook' },
-  { symbol: 'Nvidia', name: 'Nvidia' },
-  { symbol: 'Netlix', name: 'Netlix' },
-  { symbol: 'JPMorgan', name: 'JPMorgan' },
-  { symbol: 'OILCash', name: 'OILCash' },
-  { symbol: 'NGASCash', name: 'NGASCash' },
-  { symbol: 'XPTUSD', name: 'XPTUSD' },
-  { symbol: 'XPDUSD', name: 'XPDUSD' },
+  { symbol: 'GOLD', name: 'GOLD' }, { symbol: 'SILVER', name: 'SILVER' },
+  { symbol: 'EURUSD', name: 'EURUSD' }, { symbol: 'GBPUSD', name: 'GBPUSD' },
+  { symbol: 'USDJPY', name: 'USDJPY' }, { symbol: 'AUDUSD', name: 'AUDUSD' },
+  { symbol: 'USDCAD', name: 'USDCAD' }, { symbol: 'NZDUSD', name: 'NZDUSD' },
+  { symbol: 'USDCHF', name: 'USDCHF' }, { symbol: 'EURJPY', name: 'EURJPY' },
+  { symbol: 'BTCUSD', name: 'BTCUSD' }, { symbol: 'ETHUSD', name: 'ETHUSD' },
+  { symbol: 'LTCUSD', name: 'LTCUSD' }, { symbol: 'XRPUSD', name: 'XRPUSD' },
+  { symbol: 'BCHUSD', name: 'BCHUSD' }, { symbol: 'US500Cash', name: 'US500Cash' },
+  { symbol: 'US30Cash', name: 'US30Cash' }, { symbol: 'US100Cash', name: 'US100Cash' },
+  { symbol: 'US2000Cash', name: 'US2000Cash' }, { symbol: 'UK100Cash', name: 'UK100Cash' },
+  { symbol: 'GER40Cash', name: 'GER40Cash' }, { symbol: 'JP225Cash', name: 'JP225Cash' },
+  { symbol: 'NIKKEI', name: 'NIKKEI' }, { symbol: 'HK50Cash', name: 'HK50Cash' },
+  { symbol: 'ChinaHCash', name: 'ChinaHCash' }, { symbol: 'Apple', name: 'Apple' },
+  { symbol: 'Microsoft', name: 'Microsoft' }, { symbol: 'Amazon', name: 'Amazon' },
+  { symbol: 'Google', name: 'Google' }, { symbol: 'Tesla', name: 'Tesla' },
+  { symbol: 'Facebook', name: 'Facebook' }, { symbol: 'Nvidia', name: 'Nvidia' },
+  { symbol: 'Netlix', name: 'Netlix' }, { symbol: 'JPMorgan', name: 'JPMorgan' },
+  { symbol: 'OILCash', name: 'OILCash' }, { symbol: 'NGASCash', name: 'NGASCash' },
+  { symbol: 'XPTUSD', name: 'XPTUSD' }, { symbol: 'XPDUSD', name: 'XPDUSD' },
   { symbol: 'VIX-OCT25', name: 'VIX-OCT25' }
 ];
 
 export default function Ticker({ prices = {} }) {
   const scrollRef = useRef();
   const requestRef = useRef();
-  const prevPricesRef = useRef({}); // armazenar preços anteriores para calcular change
+  const prevPricesRef = useRef({});
 
-  // Debug: ver o que chega no componente
+  // Debug: log
   useEffect(() => {
-    console.log("📈 Ticker recebido no componente:", prices);
+    console.log("📈 Ticker recebido:", prices);
   }, [prices]);
 
-  // Loop infinito suave
+  // Loop de scroll suave
   useEffect(() => {
-    const scrollEl = scrollRef.current;
-    if (!scrollEl) return;
-
-    let scrollPos = 0;
-    const speed = 0.3;
+    const el = scrollRef.current;
+    if (!el) return;
+    let pos = 0;
+    const speed = 0.25;
 
     const step = () => {
-      scrollPos += speed;
-      if (scrollPos >= scrollEl.scrollWidth / 2) scrollPos = 0;
-      scrollEl.style.transform = `translateX(-${scrollPos}px)`;
+      pos += speed;
+      if (pos >= el.scrollWidth / 2) pos = 0;
+      el.style.transform = `translateX(-${pos}px)`;
       requestRef.current = requestAnimationFrame(step);
     };
 
@@ -72,30 +52,26 @@ export default function Ticker({ prices = {} }) {
     return () => cancelAnimationFrame(requestRef.current);
   }, []);
 
-  const loopSymbols = [...SYMBOLS, ...SYMBOLS]; // duplicação para loop contínuo
+  const loopSymbols = [...SYMBOLS, ...SYMBOLS];
 
   return (
     <div className="ticker-wrapper">
       <div className="ticker-scroll" ref={scrollRef}>
         {loopSymbols.map((s, idx) => {
-          const currentPriceData = prices[s.symbol] || {};
-          const prevPriceData = prevPricesRef.current[s.symbol] || { price: 0 };
+          const current = prices[s.symbol];
+          const prev = prevPricesRef.current[s.symbol] || { price: 0 };
 
-          const price = typeof currentPriceData.price === "number"
-            ? currentPriceData.price.toFixed(2)
-            : prevPriceData.price.toFixed(2);
+          const priceNum = current?.price ?? prev.price ?? 0;
+          const price = priceNum.toFixed(2);
 
-          // Calcula change com base no último preço
-          const change = typeof currentPriceData.price === "number"
-            ? currentPriceData.price - prevPriceData.price
-            : 0;
-
-          // Atualiza prevPrices
-          prevPricesRef.current[s.symbol] = { price: currentPriceData.price || prevPriceData.price };
+          const change = current?.price != null ? priceNum - prev.price : 0;
 
           const up = change > 0;
           const arrow = up ? '▲' : change < 0 ? '▼' : '';
           const color = up ? '#00ff7f' : change < 0 ? '#ff4c4c' : '#fff';
+
+          // Atualiza prevPrices somente após cálculo
+          prevPricesRef.current[s.symbol] = { price: priceNum };
 
           return (
             <div key={idx} className="ticker-item">
